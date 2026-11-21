@@ -2,6 +2,7 @@
 
 Desafío integrador de **Métodos Numéricos** (UMSA, FCPN, La Paz). Aplicación web para estudiar cuatro casos de un sistema de transporte por cable, cada uno en tres escenarios. Proyecto académico con **datos sintéticos**, inspirado en Mi Teleférico de La Paz: no describe fallas verificadas ni se conecta con equipos reales.
 
+- **Aplicación publicada:** https://simtele-risk.onrender.com (plan gratuito: la primera visita puede tardar ~50 s)
 - Informe de la semana 2: [`docs/informe_semana2.pdf`](docs/informe_semana2.pdf)
 - Informe de la semana 1: [`docs/informe_semana1.pdf`](docs/informe_semana1.pdf)
 

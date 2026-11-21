@@ -87,7 +87,7 @@ EDO: RK2 (Heun, variante declarada) y RK4 & Hecho & Sección 3.4; \texttt{numeri
 Los 4 módulos ejecutan NORMAL con tablas, errores y 2 gráficos & Hecho (y además ESTRÉS y MAL COND.) & Sección 4; \texttt{casos/*.py}; 12 escenarios\\
 Escenarios ESTRÉS y MAL CONDICIONADO y primeras comparaciones & Hecho & Secciones 4 y 5\\
 Base de datos funcional; guardar y recuperar una ejecución & Hecho & Sección 6; \texttt{persistencia.py}, \texttt{api.py}\\
-Enlace de la aplicación, repositorio e informe de experimentos y fallos & Hecho (enlace: ver sección 2.3) & Secciones 2 y 7\\
+Enlace de la aplicación, repositorio e informe de experimentos y fallos & Hecho (enlace en la sección 2.3) & Secciones 2 y 7\\
 \bottomrule
 \end{longtable}}
 
@@ -129,9 +129,9 @@ python -m uvicorn backend.simtele.api:app --port 8000
 \end{verbatim}
 y abrir \url{http://localhost:8000/}. El repositorio incluye \texttt{render.yaml} para publicar la API con la aplicación en un servicio web de Python.
 
-\caja{\textbf{Enlace de la aplicación:} \texttt{[completar con la URL del despliegue]}\\
-\textbf{Repositorio:} \url{https://github.com/Saul-C006/desafio-final-metodos}\\
-Versión estática (sin historial), si se activa GitHub Pages:\ \texttt{https://saul-c006.github.io/desafio-final-metodos/frontend/}}
+\caja{\textbf{Enlace de la aplicación:} \url{https://simtele-risk.onrender.com}\\
+\textbf{Repositorio:} \url{https://github.com/BMold/ProyFinalMetodosNumericos}\\
+Nota: el plan gratuito suspende el servicio tras 15 minutos sin uso (la primera visita tarda hasta 50 s) y su base SQLite no es persistente entre reinicios; la persistencia se demuestra en ejecución local.}
 
 % ---------------- 3 ----------------
 \section{Métodos implementados y pruebas analíticas}
