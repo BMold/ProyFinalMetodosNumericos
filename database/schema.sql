@@ -1,5 +1,8 @@
--- SIMTELE-RISK: DER inicial de 6 entidades (SQLite 3).
--- Avance de semana 1: fija entidades y relaciones; la persistencia se conecta en la semana 2.
+-- SIMTELE-RISK: modelo de datos (SQLite 3). Versión 2 (semana 2).
+-- Cambios respecto de la semana 1:
+--   * simulacion.resultado_json guarda tablas, gráficos, indicadores y conclusiones del escenario;
+--   * simulacion.tiempo_total_ms y ejecucion_metodo.familia / criterio / orden completan la trazabilidad.
+-- Las iteraciones y resúmenes de cada método siguen normalizados en sus propias tablas.
 
 PRAGMA foreign_keys = ON;
 
@@ -18,11 +21,13 @@ CREATE TABLE IF NOT EXISTS escenario (
 );
 
 CREATE TABLE IF NOT EXISTS simulacion (
-    id             INTEGER PRIMARY KEY,
-    escenario_id   INTEGER NOT NULL REFERENCES escenario(id) ON DELETE RESTRICT,
-    fecha          TEXT NOT NULL,
-    usuario_equipo TEXT,
-    estado         TEXT NOT NULL CHECK (estado IN ('COMPLETADA', 'FALLIDA'))
+    id              INTEGER PRIMARY KEY,
+    escenario_id    INTEGER NOT NULL REFERENCES escenario(id) ON DELETE RESTRICT,
+    fecha           TEXT NOT NULL,
+    usuario_equipo  TEXT,
+    estado          TEXT NOT NULL CHECK (estado IN ('COMPLETADA', 'FALLIDA')),
+    resultado_json  TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(resultado_json)),
+    tiempo_total_ms REAL CHECK (tiempo_total_ms IS NULL OR tiempo_total_ms >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS ejecucion_metodo (
@@ -33,7 +38,10 @@ CREATE TABLE IF NOT EXISTS ejecucion_metodo (
     paso          REAL,
     max_iter      INTEGER,
     convergio     INTEGER NOT NULL CHECK (convergio IN (0, 1)),
-    tiempo_ms     REAL NOT NULL CHECK (tiempo_ms >= 0)
+    tiempo_ms     REAL NOT NULL CHECK (tiempo_ms >= 0),
+    familia       TEXT NOT NULL DEFAULT 'Sistemas lineales',
+    criterio      TEXT,
+    orden         INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS iteracion_resultado (
@@ -57,5 +65,6 @@ CREATE TABLE IF NOT EXISTS resultado_resumen (
 
 CREATE INDEX IF NOT EXISTS ix_escenario_caso ON escenario(caso_id, tipo);
 CREATE INDEX IF NOT EXISTS ix_simulacion_escenario ON simulacion(escenario_id);
+CREATE INDEX IF NOT EXISTS ix_simulacion_fecha ON simulacion(fecha);
 CREATE INDEX IF NOT EXISTS ix_ejecucion_simulacion ON ejecucion_metodo(simulacion_id);
-CREATE INDEX IF NOT EXISTS ix_iteracion_ejecucion ON iteracion_resultado(ejecucion_id);
+CREATE INDEX IF NOT EXISTS ix_iteracion_ejecucion ON iteracion_resultado(ejecucion_id, numero);

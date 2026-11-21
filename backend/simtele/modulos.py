@@ -1,7 +1,7 @@
 """Definición de los cuatro casos de estudio y de sus tres escenarios.
 
-Es el planteamiento de la semana 1: variables, unidades, hipótesis, referencias y escenarios.
-Sólo la calibración del módulo 2 se ejecuta en esta entrega (ver experimentos.py).
+Planteamiento (semana 1): variables, unidades, hipótesis, referencias y escenarios.
+La implementación de cada caso está en backend/simtele/casos/ (semana 2).
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ MODULOS = [
         "modelo": ["D(t) = D0 + α t + β t²", "D(t) − D_u = 0", "A x = b, A SPD, b = A x*"],
         "variables": ["D: desgaste hipotético [%]", "t: tiempo [meses]", "α [%/mes], β [%/mes²]", "x: coeficientes calibrados"],
         "hipotesis": "Indicador hipotético cuadrático; calibración por tramos con datos sin ruido.",
-        "metodos": ["Jacobi", "Gauss-Seidel", "LU", "Gradiente conjugado", "Referencia directa", "Bisección", "Newton-Raphson", "Secante"],
+        "metodos": ["Jacobi", "Gauss-Seidel", "LU", "Gradiente conjugado", "Bisección", "Newton-Raphson", "Secante"],
         "referencia": "Raíz de la cuadrática; solución x* prefijada del sistema SPD.",
         "escenarios": {
             "NORMAL": "A = I + 0.1 L, 6 tramos, κ cercano a 1, tol = 1e-10.",
@@ -68,7 +68,7 @@ MODULOS = [
         "modelo": ["y(t) conocida en N instantes", "Ocultar puntos de prueba", "p(t_i) = y_i", "e = |p(t_oculto) − y(t_oculto)|"],
         "variables": ["t: tiempo [s]", "y: señal normalizada [u]", "σ: ruido [u]", "N: muestras"],
         "hipotesis": "Señal sintética conocida; ruido gaussiano con semilla fija.",
-        "metodos": ["Lagrange", "Newton (diferencias divididas)", "Spline cúbico natural"],
+        "metodos": ["Lagrange", "Newton (diferencias divididas)", "Spline cúbico natural", "Gradiente conjugado, Gauss-Seidel, Jacobi y LU (sistema del spline)", "Bisección", "Newton-Raphson", "Secante"],
         "referencia": "Señal analítica evaluada en los puntos ocultos.",
         "escenarios": {
             "NORMAL": "y = sin(t) con 17 muestras, sin ruido.",

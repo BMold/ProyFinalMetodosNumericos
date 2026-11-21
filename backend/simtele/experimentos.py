@@ -1,9 +1,11 @@
-"""Primeros experimentos: tres escenarios del sistema A x = b del módulo 2.
+"""Experimentos reproducibles: los 12 escenarios (4 módulos × 3 condiciones).
 
-Uso, desde la raíz de la versión:
+Uso, desde la raíz del repositorio:
     python -m backend.simtele.experimentos
 
-Imprime la tabla de errores y escribe frontend/datos/experimentos.json para el prototipo.
+Imprime un resumen por módulo y escenario y escribe frontend/datos/experimentos.json, que la
+aplicación usa para el panel de comparación y como respaldo estático cuando no hay API.
+generar() conserva el experimento de sistemas lineales de la semana 1.
 """
 
 from __future__ import annotations
@@ -20,6 +22,7 @@ from .modulos import MODULOS, NOTA_SINTETICOS
 from .numerico import errores, sistemas
 
 SALIDA = Path(__file__).resolve().parents[2] / "frontend" / "datos" / "experimentos.json"
+PANEL = SALIDA.with_name("panel.json")
 MAX_ITERACIONES_GRAFICO = 400
 
 ESCENARIOS = {
@@ -128,14 +131,49 @@ def imprimir(datos: dict) -> None:
             print(f"{m['metodo']:<24} {m['iteraciones']:>6} {'Sí' if m['convergio'] else 'No':>6} {fmt(m['error_abs']):>11} {fmt(m['error_rel']):>11} {fmt(m['residual']):>11}")
 
 
+def generar_todo() -> dict:
+    """Ejecuta los 12 escenarios con sus parámetros por defecto."""
+    from .casos import CASOS, describir, simular
+
+    datos = generar()
+    datos["modulos"] = describir()
+    datos["resultados"] = {codigo: {tipo: simular(codigo, tipo) for tipo in caso.ESCENARIOS} for codigo, caso in CASOS.items()}
+    return datos
+
+
+def imprimir_casos(datos: dict) -> None:
+    print("\nResumen de los 12 escenarios")
+    for codigo, por_tipo in datos["resultados"].items():
+        for tipo, r in por_tipo.items():
+            panel = "; ".join(f"{k}: {v}" for k, v in r["panel"])
+            print(f"  M{r['modulo_id']} {tipo:<17} {r['tiempo_total_ms']:8.0f} ms  {panel}")
+
+
 def main() -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    datos = generar()
+    datos = generar_todo()
     imprimir(datos)
+    imprimir_casos(datos)
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
-    SALIDA.write_text(json.dumps(datos, ensure_ascii=False, allow_nan=False, indent=1), encoding="utf-8")
-    print(f"\nDatos del prototipo: {SALIDA}")
+    SALIDA.write_text(json.dumps(datos, ensure_ascii=False, allow_nan=False, separators=(",", ":")), encoding="utf-8")
+    panel = {
+        "modelo_version": datos["modelo_version"],
+        "panel": {
+            codigo: {
+                tipo: {
+                    "panel": r["panel"],
+                    "conclusiones": r["conclusiones"],
+                    "tiempo_total_ms": r["tiempo_total_ms"],
+                    "convergencias": [[e["familia"], e["etiqueta"], e["convergio"]] for e in r["ejecuciones"]],
+                }
+                for tipo, r in por_tipo.items()
+            }
+            for codigo, por_tipo in datos["resultados"].items()
+        },
+    }
+    PANEL.write_text(json.dumps(panel, ensure_ascii=False, allow_nan=False, separators=(",", ":")), encoding="utf-8")
+    print(f"\nDatos de la aplicación: {SALIDA} y {PANEL}")
     return 0
 
 
